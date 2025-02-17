@@ -1,0 +1,106 @@
+compaartor v/s comparable:
+En Java, tanto `Comparable` como `Comparator` se usan para definir el orden de los objetos, pero tienen diferencias clave en su implementación y uso.  
+
+## 🔹 `Comparable` (Interfaz)
+- Se usa cuando una clase necesita definir su **orden natural**.  
+- La clase que se quiere ordenar **implementa** `Comparable<T>` y sobrescribe el método `compareTo(T o)`.  
+- Se usa cuando el orden de los objetos es **intrínseco** a la clase (por ejemplo, ordenar empleados por su ID).  
+- Solo se puede definir **un** criterio de comparación.
+
+### Ejemplo de `Comparable`
+```java
+class Persona implements Comparable<Persona> {
+    private String nombre;
+    private int edad;
+
+    public Persona(String nombre, int edad) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+
+    @Override
+    public int compareTo(Persona otra) {
+        return Integer.compare(this.edad, otra.edad); // Ordenar por edad
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + edad + " años)";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<Persona> personas = new ArrayList<>();
+        personas.add(new Persona("Ana", 30));
+        personas.add(new Persona("Luis", 25));
+        personas.add(new Persona("Pedro", 35));
+
+        Collections.sort(personas); // Ordena usando compareTo()
+        System.out.println(personas); // [Luis (25 años), Ana (30 años), Pedro (35 años)]
+    }
+}
+```
+🔹 **Ventaja**: Simple y directo si solo necesitas un criterio de ordenación.  
+🔹 **Desventaja**: Si necesitas múltiples criterios de ordenación, no es flexible.  
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+## 🔹 `Comparator` (Interfaz)
+- Se usa cuando **quieres definir múltiples formas de ordenar** una clase sin modificar su código.  
+- No se implementa en la clase que se quiere ordenar, sino que se **crea una clase separada** o se usa una **expresión lambda**.  
+- Se usa cuando el orden **no es natural** y puede variar según el contexto (por ejemplo, ordenar empleados por salario o por nombre).  
+
+### Ejemplo de `Comparator`
+```java
+class Persona {
+    private String nombre;
+    private int edad;
+
+    public Persona(String nombre, int edad) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+
+    public String getNombre() { return nombre; }
+    public int getEdad() { return edad; }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + edad + " años)";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<Persona> personas = new ArrayList<>();
+        personas.add(new Persona("Ana", 30));
+        personas.add(new Persona("Luis", 25));
+        personas.add(new Persona("Pedro", 35));
+
+        // Ordenar por nombre (usando Comparator como lambda)
+        personas.sort(Comparator.comparing(Persona::getNombre));
+        System.out.println(personas); // [Ana (30 años), Luis (25 años), Pedro (35 años)]
+
+        // Ordenar por edad (descendente)
+        personas.sort((p1, p2) -> Integer.compare(p2.getEdad(), p1.getEdad()));
+        System.out.println(personas); // [Pedro (35 años), Ana (30 años), Luis (25 años)]
+    }
+}
+```
+🔹 **Ventaja**: Permite múltiples criterios de ordenación sin modificar la clase original.  
+🔹 **Desventaja**: Es más código si solo necesitas un criterio de ordenación.  
+
+---
+
+## Resumen  
+|    Característica    |              `Comparable`              |                     `Comparator`                     |
+|----------------------|----------------------------------------|------------------------------------------------------|
+| Dónde se implementa  | Dentro de la propia clase              | En una clase separada o lambda                       |
+| Método a implementar | `compareTo(T o)`                       | `compare(T o1, T o2)`                                |
+| Uso principal        | Definir orden **natural**              | Permitir múltiples criterios de ordenación           |
+| Ejemplo típico       | Ordenar `Persona` por edad por defecto | Ordenar `Persona` por nombre o edad según necesidad  |
+| Ventaja              | Simplicidad si solo hay un criterio     | Mayor flexibilidad para definir diferentes órdenes  |
+
+Si el objeto **tiene un único orden lógico**, usa `Comparable`.  
+Si **necesitas múltiples formas de ordenar**, usa `Comparator`.

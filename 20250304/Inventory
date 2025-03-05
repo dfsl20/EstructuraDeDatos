@@ -1,0 +1,29 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Inventory{
+    /*ejercicio preparacio del parcial:
+     * 1. usar la clase produco de la primera area para agregar productos y no Sring a la cola
+     * 2. no permiir hacer poll d eun objeto si tiene contidad ==0
+     */
+    public static void main(String[] args){
+        Queue<String> inventario = new LinkedList<>();
+
+        //con el add se agrega a la cola (se agrega al invenario)
+        inventario.add("Nuevo produco 1 ");
+        inventario.add("Nuevo produco 2 ");
+        inventario.add("Nuevo produco 3 ");
+
+        System.out.println("Inventario acual: "+inventario);
+
+        /*se vende un producto y sale un producto del inventario
+         * con el poll de despacha o se elimina d ela cola
+         */
+
+         System.out.println("Producto vendido: " + inventario.poll());
+         System.out.println("Se vendio otro producto: " + inventario.poll());
+
+         System.out.println("Onventario final: "+inventario);
+    }
+}

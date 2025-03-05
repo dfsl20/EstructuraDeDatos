@@ -1,0 +1,86 @@
+import java.util.Stack;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.*;
+
+public class PilasYColas {
+    public static void main(String[] args) {
+        Scanner lector = new Scanner(System.in);
+        Stack<String> pilaTexto = new Stack<String>();
+
+        String textoActual = "", nuevoTexto;
+        int opcion;
+        // pilaOperaciones
+        // ciclo infinito del mini editor:
+        while (true) {
+            // System.out.println("Texto actual en el editor: "+textoActual);
+            System.out.println("Seleccione una opcion: (1) Ingresar  (2) Deshacer  (3) Salir");
+            System.out.print("(4) Imprimir el texto completo. ");
+            System.out.print("\n" + "(5) Imprimir desde la Pila. ");
+            opcion = lector.nextInt();
+
+            // leer texto desde el editor:
+            lector.nextLine();
+            switch (opcion) {
+                // agregar texto
+                case 1:
+                    System.out.println("Escribe tu texto");
+                    nuevoTexto = lector.nextLine();
+                    /* Agregar elementos a la pila */
+                    pilaTexto.push(nuevoTexto);
+                    textoActual += nuevoTexto;
+                    break;
+
+                /* eliminar texto de la pila */
+
+                case 2:
+                    if (!pilaTexto.isEmpty()) {
+                        /* sacr texto de la pila */
+                        textoActual = pilaTexto.pop();
+                    } else {
+                        System.out.println("No hay texto para eliminar");
+                    }
+                    break;
+
+                case 3:
+                    System.out.println("Cerrando...");
+                    lector.close();
+                    return;
+
+                case 4:
+                    System.out.println("Texto actual en el editor: " + textoActual);
+                    break;
+
+                case 5:
+                    /* sacar elementos de la pila con pop e irlos imprimiendo en pantalla */
+                    System.out.print("Datos inicales: " + textoActual);
+
+                    // Crear una lisa auxiliar para almacenar los elemenos en orden cerrecto
+                    // ArrayList<String>textoOrdenado = new ArrayList<>();
+
+                    Stack<String> pilaAux = new Stack<>();
+
+                    while (!pilaTexto.isEmpty()) {
+
+                        pilaAux.push(pilaTexto.pop()); // extrae y guarda en la lista
+                    }
+
+                    /* como hacer para que imprima el texto en orden */
+                    // imprimir los elementos en orden correcto
+                    System.out.print("Texto en orden correcto");
+                    while (!pilaAux.isEmpty()) {
+                        String elemento = pilaAux.pop();
+                        System.out.print(elemento);
+                        pilaTexto.push(elemento);// volve a meter en pilaTexto para no peder datos
+                    }
+
+            
+            System.out.print("¿Esta vacia?" + pilaTexto.isEmpty());
+            break;
+        }
+            // default:
+            // System.out.println("Opcion no valida...");
+
+        }
+    }
+}

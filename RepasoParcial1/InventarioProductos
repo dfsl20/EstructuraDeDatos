@@ -1,0 +1,191 @@
+import java.util.*;
+        
+        public class InventarioProductos {
+            private String nombre;
+            private int precio;
+            private int codigo;
+            private int cantidad;
+    
+            public InventarioProductos(String nombre, int precio, int codigo, int cantidad) {
+                this.codigo = codigo;
+                this.nombre = nombre;
+                this.precio = precio;
+                this.cantidad = cantidad;
+            }
+    
+            public String getNombre() {
+                return nombre;
+            }
+    
+            public int getPrecio() {
+                return precio;
+            }
+    
+            public int getCodigo() {
+                return codigo;
+            }
+    
+            public int getCantidad() {
+                return cantidad;
+            }
+            public void reducirCantidad() {
+                if (cantidad == 0) {
+                    System.out.println("No se puede vender un producto sin stock");;
+                }else{
+                    cantidad--;
+                }
+            }
+    
+            @Override
+            public String toString() {
+                return nombre + " | Precio: $" + precio + " | Código: " + codigo + " | Cantidad: " + cantidad;
+            }
+        
+    
+        public static void bubbleSort(List<InventarioProductos> lista) {
+            int n = lista.size();
+            boolean swapped;
+            for (int i = 0; i < n - 1; i++) {
+                swapped = false;
+                for (int j = 0; j < n - 1 - i; j++) {
+                    if (lista.get(j).getPrecio() > lista.get(j + 1).getPrecio()) {
+                        InventarioProductos temp = lista.get(j);
+                        lista.set(j, lista.get(j + 1));
+                        lista.set(j + 1, temp);
+                        swapped = true;
+                    }
+                }
+                if (!swapped) break;
+            }
+        }
+    
+        public static void insertionSort(List<InventarioProductos> lista) {
+            int n = lista.size();
+            for (int i = 1; i < n; i++) {
+                InventarioProductos key = lista.get(i);
+                int j = i - 1;
+                while (j >= 0 && lista.get(j).getNombre().compareToIgnoreCase(key.getNombre()) > 0) {
+                    lista.set(j + 1, lista.get(j));
+                    j--;
+                }
+                lista.set(j + 1, key);
+            }
+        }
+    
+        public static void imprimirLista(List<InventarioProductos> lista) {
+            for (InventarioProductos producto : lista) {
+                System.out.println(producto);
+            }
+        }
+    
+        public static void agregarProducto(List<InventarioProductos> lista, Scanner scanner) {
+            System.out.print("Ingrese el nombre del producto: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Ingrese el precio del producto: ");
+            int precio = scanner.nextInt();
+            System.out.print("Ingrese el código del producto: ");
+            int codigo = scanner.nextInt();
+            System.out.print("Ingrese la cantidad del producto: ");
+            int cantidad = scanner.nextInt();
+            scanner.nextLine(); // Limpiar buffer
+    
+            lista.add(new InventarioProductos(nombre, precio, codigo, cantidad));
+            System.out.println("Producto agregado exitosamente.");
+        }
+    
+        public static InventarioProductos busquedaBinariaPorCodigo(List<InventarioProductos> lista, int codigo) {
+            int inicio = 0, fin = lista.size() - 1;
+            while (inicio <= fin) {
+                int medio = inicio + (fin - inicio) / 2;
+                if (lista.get(medio).getCodigo() == codigo) {
+                    return lista.get(medio);
+                } else if (lista.get(medio).getCodigo() < codigo) {
+                    inicio = medio + 1;
+                } else {
+                    fin = medio - 1;
+                }
+            }
+            return null;
+        }
+    
+        public static void main(String[] args) {
+            Queue<InventarioProductos> inventario = new LinkedList<>();
+            List<InventarioProductos> lista = new ArrayList<>();
+        
+            InventarioProductos p1 = new InventarioProductos("Monster Energy", 5800, 11, 10);
+            InventarioProductos p2 = new InventarioProductos("SpeedMax", 2000, 12, 12);
+            InventarioProductos p3 = new InventarioProductos("Redbull", 8900, 1, 2);
+            InventarioProductos p4 = new InventarioProductos("Psychotic Pre Workout", 90000, 2, 3);
+            InventarioProductos p5 = new InventarioProductos("Amper", 3000, 5, 6);
+            
+        lista.addAll(Arrays.asList(p1, p2, p3, p4, p5));
+        inventario.addAll(lista);
+            Scanner scanner = new Scanner(System.in);
+            int opcion;
+    
+            do {
+                System.out.println("\n==== MENU ====");
+                System.out.println("1. Mostrar productos");
+                System.out.println("2. Ordenar por precio");
+                System.out.println("3. Ordenar por nombre");
+                System.out.println("4. Buscar producto por código (BúsquedaBinaria)");
+                System.out.println("5. Agregar nuevo producto");
+                System.out.println("6. Vender");
+                System.out.println("7. Salir");
+                System.out.print("Seleccione una opción (Escriba un numero ente el 1 y el 7): ");
+                opcion = scanner.nextInt();
+                scanner.nextLine(); 
+    
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Lista de productos:");
+                        imprimirLista(lista);
+                        break;
+                    case 2:
+                        bubbleSort(lista);
+                        System.out.println("Lista ordenada por precio:");
+                        imprimirLista(lista);
+                        break;
+                    case 3:
+                        insertionSort(lista);
+                        System.out.println("Lista ordenada alfabéticamente:");
+                        imprimirLista(lista);
+                        break;
+                    case 4:
+                        System.out.print("Ingrese el código del producto a buscar: ");
+                        int codigoBuscado = scanner.nextInt();
+                        InventarioProductos productoCodigoEncontrado = busquedaBinariaPorCodigo(lista, codigoBuscado);
+                        if (productoCodigoEncontrado != null) {
+                            System.out.println("Producto encontrado: " + productoCodigoEncontrado);
+                        } else {
+                            System.out.println("Producto no encontrado.");
+                        }
+                        break;
+                    case 5:
+                        agregarProducto(lista, scanner);
+                        break;
+                    case 6:
+                        if (!inventario.isEmpty()){
+                            InventarioProductos productoVendido = inventario.peek();
+                            if (productoVendido.getCantidad() > 0){
+                                productoVendido.reducirCantidad();
+                                System.out.println("Producto vendido: "+productoVendido);
+                                if(productoVendido.getCantidad()==0){
+                                    inventario.poll();
+                                    System.out.println("Producto agotado");
+                                }
+                            }
+                        }
+                    break;
+                    case 7:
+                        System.out.println("Saliendo del programa...");
+                        break;
+                    default:
+                        System.out.println("Opción no válida, intente nuevamente.");
+                        break;
+                }
+            } while (opcion != 7);
+    
+            scanner.close();
+        }
+    }
